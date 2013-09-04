@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="4dip"
+    android:layout_marginRight="4dip" >
+
+    <TableRow android:weightSum="3" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/name_l" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="3dip" />
+    </TableRow>
+
+    <TableRow android:weightSum="3" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/location_l" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="3dip" />
+    </TableRow>
+
+    <TableRow android:weightSum="3" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/items_l" />
+
+        <TextView
+            android:id="@+id/item"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="3dip" />
+    </TableRow>
+
+    <TableRow android:weightSum="3" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/size_l" />
+
+        <TextView
+            android:id="@+id/size"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="3dip" />
+    </TableRow>
+
+    <TableRow android:weightSum="3" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/last_modified_l" />
+
+        <TextView
+            android:id="@+id/last_modified"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="3dip" />
+    </TableRow>
+
+</TableLayout>

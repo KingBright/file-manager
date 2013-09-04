@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_share"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_share"/>
+    <item
+        android:id="@+id/menu_rename"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_rename"/>
+    <item
+        android:id="@+id/menu_copy"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_copy"/>
+    <item
+        android:id="@+id/menu_cut"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_cut"/>
+    <item
+        android:id="@+id/menu_delete"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_delete"/>
+    <item
+        android:id="@+id/menu_remove_favourite"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_remove_favourite"/>
+    <item
+        android:id="@+id/menu_add_favourite"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_add_favourite"/>
+    <item
+        android:id="@+id/menu_properties"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_properties"/>
+
+</menu>
