@@ -41,6 +41,26 @@
         <item>
 .midi
         </item>
+
+        <item>
+.m4a
+        </item>
+        
+        <item>
+.wma            
+        </item>
+        
+        <item>
+.ape            
+        </item>
+        
+        <item>
+.flac
+        </item>
+        
+        <item>
+.alac
+        </item>
     </category>
 
     <category name="video" >
@@ -59,6 +79,14 @@
 
         <item>
 .flv
+        </item>
+
+        <item>
+.mvb            
+        </item>
+        
+        <item>
+.mkv            
         </item>
     </category>
 
@@ -82,6 +110,10 @@
 
         <item>
 .img
+        </item>
+        
+        <item>
+.7z            
         </item>
     </category>
 
@@ -136,6 +168,10 @@
 
         <item>
 .log
+        </item>
+        
+        <item>
+.ini
         </item>
     </category>
 
