@@ -1,4 +1,3 @@
-
 package com.kingbright.fil2explorer.ui;
 
 import java.io.File;
@@ -25,235 +24,239 @@ import com.kingbright.fil2explorer.operation.Operations.Operation;
 import com.kingbright.fil2explorer.operation.Operations.OperationListener;
 
 public class FileListFragment extends BasicFragment {
-    private FileScanner mScanner;
-    private int mLastPosition;
-    private Operations.OperationListener mRefreshOperation = new Operations.OperationListener() {
-        public void onOperationDone() {
-            refresh();
-        }
-    };
+	private FileScanner mScanner;
+	private int mLastPosition;
+	private Operations.OperationListener mRefreshOperation = new Operations.OperationListener() {
+		public void onOperationDone() {
+			refresh();
+		}
+	};
 
-    private Operations.OperationListener mInvalidateOptionsMenuListener = new OperationListener() {
-        @Override
-        public void onOperationDone() {
-            getActivity().invalidateOptionsMenu();
-        }
-    };
+	private Operations.OperationListener mInvalidateOptionsMenuListener = new OperationListener() {
+		@Override
+		public void onOperationDone() {
+			getActivity().invalidateOptionsMenu();
+		}
+	};
 
-    protected void handleMsg(Message msg) {
-        switch (msg.what) {
-            case REFRESH_FINISH: {
-                FileList list = mScanner.peek();
-                if (list == null) {
-                    return;
-                }
-                boolean flag = list.getFileList().size() == 0;
-                mList.setVisibility(flag ? View.GONE : View.VISIBLE);
-                mEmptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
+	protected void handleMsg(Message msg) {
+		switch (msg.what) {
+		case REFRESH_FINISH: {
+			FileList list = mScanner.peek();
+			if (list == null) {
+				return;
+			}
+			boolean flag = list.getFileList().size() == 0;
 
-                mAdapter.setFiles(list);
-                mList.setSelection(mLastPosition);
-                if (ClipBoard.getInstance().needRefresh(
-                        mScanner.getCurrentFile())) {
-                    Log.e("refresh", "position " + mLastPosition);
-                    getHandler().sendEmptyMessage(REFRESH);
-                }
-                return;
-            }
-            case REFRESH: {
-                refresh();
-                return;
-            }
-        }
-        super.handleMsg(msg);
-    }
+			setFileListVisibility(flag);
 
-    private FileScanListener mListener = new FileScanListener() {
+			setEmptyView(flag);
 
-        public void onScanStart() {
-            mLastPosition = mList.getFirstVisiblePosition();
-            mScanner.saveLastPosition(mLastPosition);
-        }
+			setFiles(list);
 
-        @Override
-        public void onScanSuccessed() {
-            mLastPosition = mScanner.getLastPosition();
-            getHandler().sendEmptyMessage(REFRESH_FINISH);
-        }
+			setFileListSelection(mLastPosition);
+			if (ClipBoard.getInstance().needRefresh(mScanner.getCurrentFile())) {
+				Log.e("refresh", "position " + mLastPosition);
+				getHandler().sendEmptyMessage(REFRESH);
+			}
+			return;
+		}
+		case REFRESH: {
+			refresh();
+			return;
+		}
+		}
+		super.handleMsg(msg);
+	}
 
-        @Override
-        public void onScanCanceled() {
-        }
+	private FileScanListener mListener = new FileScanListener() {
 
-        @Override
-        public void onScanFailed() {
-        }
+		public void onScanStart() {
+			mLastPosition = getFirstVisiblePosition();
+			mScanner.saveLastPosition(mLastPosition);
+		}
 
-        @Override
-        public void onScanRunning() {
-        }
+		@Override
+		public void onScanSuccessed() {
+			mLastPosition = mScanner.getLastPosition();
+			getHandler().sendEmptyMessage(REFRESH_FINISH);
+		}
 
-    };
+		@Override
+		public void onScanCanceled() {
+		}
 
-    public void onViewCreated(View view, Bundle bundle) {
-        super.onViewCreated(view, bundle);
-        mScanner = FileScanner.getInstance();
-        mScanner.startScanning(null, mListener);
-    }
+		@Override
+		public void onScanFailed() {
+		}
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.file_list_menu, menu);
-    }
+		@Override
+		public void onScanRunning() {
+		}
 
-    private void refresh() {
-        mScanner.startScanning(mScanner.getCurrentFile(), mListener);
-    }
+	};
 
-    protected void setMenuItemVisibility(Menu menu, boolean visibility) {
-        menu.findItem(R.id.menu_add_favourite).setVisible(false);
-        menu.findItem(R.id.menu_copy).setVisible(visibility);
-        menu.findItem(R.id.menu_delete).setVisible(visibility);
-        menu.findItem(R.id.menu_cut).setVisible(visibility);
-        menu.findItem(R.id.menu_folder).setVisible(!visibility);
-        menu.findItem(R.id.menu_refresh).setVisible(!visibility);
-        menu.findItem(R.id.menu_settings).setVisible(true);
-        menu.findItem(R.id.menu_exit).setVisible(true);
-        menu.findItem(R.id.menu_search).setVisible(
-                true);
-        menu.findItem(R.id.menu_multi_select).setVisible(!visibility);
-        menu.findItem(R.id.menu_single_select).setVisible(visibility);
+	public void onViewCreated(View view, Bundle bundle) {
+		super.onViewCreated(view, bundle);
+		mScanner = FileScanner.getInstance();
+		mScanner.startScanning(null, mListener);
+	}
 
-        List<File> clipBoard = ClipBoard.getInstance().getClipBoardData();
-        menu.findItem(R.id.menu_paste).setVisible(
-                clipBoard == null ? false : clipBoard.size() == 0 ? false
-                        : true);
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.file_list_menu, menu);
+	}
 
-        if (mSearchView.getVisibility() == View.VISIBLE) {
-            handleQueryModeMenu(menu);
-            return;
-        }
-    }
+	private void refresh() {
+		mScanner.startScanning(mScanner.getCurrentFile(), mListener);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_search: {
-                mSearchView.setVisibility(View.VISIBLE);
-                getActivity().invalidateOptionsMenu();
-                break;
-            }
-            case R.id.menu_add_favourite: {
-                Operations.doOperation(getActivity(), getHandler(), getSelectedFiles(),
-                        Operation.MOVE_FAVOURITE);
-                break;
-            }
-            case R.id.menu_copy: {
-                Operations.doOperation(getActivity(), getHandler(), getSelectedFiles(),
-                        Operation.COPY, mInvalidateOptionsMenuListener);
-                break;
-            }
-            case R.id.menu_cut: {
-                Operations.doOperation(getActivity(), getHandler(), getSelectedFiles(),
-                        Operation.CUT, mInvalidateOptionsMenuListener);
-                break;
-            }
-            case R.id.menu_delete: {
-                Operations.doOperation(getActivity(), getHandler(), getSelectedFiles(),
-                        Operation.DELETE, mRefreshOperation);
-                break;
-            }
-            case R.id.menu_paste: {
-                Operations.doOperation(getActivity(), getHandler(), ClipBoard.getInstance()
-                        .getClipBoardData(), Operation.PASTE, new OperationListener() {
-                    @Override
-                    public void onOperationDone() {
-                        getActivity().invalidateOptionsMenu();
-                        mRefreshOperation.onOperationDone();
-                    }
-                });
-                break;
-            }
-            case R.id.menu_folder: {
-                Operations.doOperation(getActivity(), getHandler(), mScanner.getCurrentFile(),
-                        Operation.NEW_FOLDER, mRefreshOperation);
-                break;
-            }
-            case R.id.menu_refresh: {
-                refresh();
-                break;
-            }
-            case R.id.menu_multi_select: {
-                setMultiMode(true);
-                break;
-            }
-            case R.id.menu_single_select: {
-                setMultiMode(false);
-                break;
-            }
-            default:
-                super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
+	protected void setMenuItemVisibility(Menu menu, boolean visibility) {
+		menu.findItem(R.id.menu_add_favourite).setVisible(false);
+		menu.findItem(R.id.menu_copy).setVisible(visibility);
+		menu.findItem(R.id.menu_delete).setVisible(visibility);
+		menu.findItem(R.id.menu_cut).setVisible(visibility);
+		menu.findItem(R.id.menu_folder).setVisible(!visibility);
+		menu.findItem(R.id.menu_refresh).setVisible(!visibility);
+		menu.findItem(R.id.menu_settings).setVisible(true);
+		menu.findItem(R.id.menu_exit).setVisible(true);
+		menu.findItem(R.id.menu_search).setVisible(true);
+		menu.findItem(R.id.menu_multi_select).setVisible(!visibility);
+		menu.findItem(R.id.menu_single_select).setVisible(visibility);
 
-    private List<File> getSelectedFiles() {
-        List<File> list = mAdapter.getFiles().getFileList();
-        List<File> selectedFiles = new ArrayList<File>();
-        for (int index : mAdapter.getSelected()) {
-            selectedFiles.add(list.get(index));
-        }
-        mAdapter.getSelected().clear();
-        return selectedFiles;
-    }
+		List<File> clipBoard = ClipBoard.getInstance().getClipBoardData();
+		menu.findItem(R.id.menu_paste).setVisible(
+				clipBoard == null ? false : clipBoard.size() == 0 ? false
+						: true);
 
-    private void handleQueryModeMenu(Menu menu) {
-        menu.findItem(R.id.menu_search).setVisible(
-                false);
-        menu.findItem(R.id.menu_folder).setVisible(false);
-        menu.findItem(R.id.menu_refresh).setVisible(false);
-        menu.findItem(R.id.menu_paste).setVisible(false);
-    }
+		if (getSearchViewVisibility() == View.VISIBLE) {
+			handleQueryModeMenu(menu);
+			return;
+		}
+	}
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
-        File file = (File) parent.getItemAtPosition(position);
-        if (mAdapter.isMultiSelectionMode()) {
-            mAdapter.performSelect(position);
-            if (!mAdapter.isMultiSelectionMode()) {
-                setMultiMode(false);
-            }
-        } else {
-            if (file.isDirectory()) {
-                exitQueryMode(false);
-                mScanner.startScanning(file, mListener);
-            } else {
-                Operations.doOperation(getActivity(), getHandler(), file, Operation.OPEN);
-            }
-        }
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_search: {
+			setSearchViewVisibility(View.VISIBLE);
+			getActivity().invalidateOptionsMenu();
+			break;
+		}
+		case R.id.menu_add_favourite: {
+			Operations.doOperation(getActivity(), getHandler(), getSelected(),
+					Operation.MOVE_FAVOURITE);
+			break;
+		}
+		case R.id.menu_copy: {
+			Operations.doOperation(getActivity(), getHandler(), getSelected(),
+					Operation.COPY, mInvalidateOptionsMenuListener);
+			break;
+		}
+		case R.id.menu_cut: {
+			Operations.doOperation(getActivity(), getHandler(), getSelected(),
+					Operation.CUT, mInvalidateOptionsMenuListener);
+			break;
+		}
+		case R.id.menu_delete: {
+			Operations.doOperation(getActivity(), getHandler(), getSelected(),
+					Operation.DELETE, mRefreshOperation);
+			break;
+		}
+		case R.id.menu_paste: {
+			Operations.doOperation(getActivity(), getHandler(), ClipBoard
+					.getInstance().getClipBoardData(), Operation.PASTE,
+					new OperationListener() {
+						@Override
+						public void onOperationDone() {
+							getActivity().invalidateOptionsMenu();
+							mRefreshOperation.onOperationDone();
+						}
+					});
+			break;
+		}
+		case R.id.menu_folder: {
+			Operations.doOperation(getActivity(), getHandler(),
+					mScanner.getCurrentFile(), Operation.NEW_FOLDER,
+					mRefreshOperation);
+			break;
+		}
+		case R.id.menu_refresh: {
+			refresh();
+			break;
+		}
+		case R.id.menu_multi_select: {
+			setMultiMode(true);
+			break;
+		}
+		case R.id.menu_single_select: {
+			setMultiMode(false);
+			break;
+		}
+		default:
+			super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
 
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view,
-            int position, long id) {
-        File file = mAdapter.getItem(position);
-        PopupMenu menu = getPopupMenu(view, getHandler(), file,
-                mRefreshOperation);
-        menu.getMenu().findItem(R.id.menu_remove_favourite).setVisible(false);
-        menu.getMenu().findItem(R.id.menu_share).setVisible(file.isFile() & file.canRead());
-        menu.show();
-        return true;
-    }
+	private List<File> getSelected() {
+		List<File> list = getFileList();
+		List<File> selectedFiles = new ArrayList<File>();
+		for (int index : getSelectedFiles()) {
+			selectedFiles.add(list.get(index));
+		}
+		clearSelectedFiles();
+		return selectedFiles;
+	}
 
-    @Override
-    public boolean onBackPressed() {
-        if (mSearchView.getVisibility() == View.VISIBLE) {
-            exitQueryMode(true);
-            return true;
-        }
-        return mScanner.handleBack(mListener);
-    }
+	private void handleQueryModeMenu(Menu menu) {
+		menu.findItem(R.id.menu_search).setVisible(false);
+		menu.findItem(R.id.menu_folder).setVisible(false);
+		menu.findItem(R.id.menu_refresh).setVisible(false);
+		menu.findItem(R.id.menu_paste).setVisible(false);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		File file = (File) parent.getItemAtPosition(position);
+		if (isMultiSelectionMode()) {
+			performSelect(position);
+			if (!isMultiSelectionMode()) {
+				setMultiMode(false);
+			}
+		} else {
+			if (file.isDirectory()) {
+				exitQueryMode(false);
+				mScanner.startScanning(file, mListener);
+			} else {
+				Operations.doOperation(getActivity(), getHandler(), file,
+						Operation.OPEN);
+			}
+		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+		File file = getItem(position);
+		PopupMenu menu = getPopupMenu(view, getHandler(), file,
+				mRefreshOperation);
+		menu.getMenu().findItem(R.id.menu_remove_favourite).setVisible(false);
+		menu.getMenu().findItem(R.id.menu_share)
+				.setVisible(file.isFile() & file.canRead());
+		menu.show();
+		return true;
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		if (getSearchViewVisibility() == View.VISIBLE) {
+			exitQueryMode(true);
+			return true;
+		}
+		return mScanner.handleBack(mListener);
+	}
 
 }
