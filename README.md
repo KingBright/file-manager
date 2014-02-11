@@ -1,4 +1,4 @@
-file-manager
+File Explorer
 ============
 
-simple file manager for Android
+Simple file explorer on Android, developed with pure java.
