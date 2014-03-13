@@ -53,7 +53,6 @@ public class FileProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         mFileDB = dbHelper.getWritableDatabase();
