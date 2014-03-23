@@ -49,13 +49,13 @@ public class Msg {
 			TextView textview = new TextView(context);
 			mTextView = textview;
 			mToast.setView(textview);
-			mTextView.setTextSize(25);
+			mTextView.setTextSize(18);
 			mTextView.setPadding(35, 24, 35, 24);
 			mTextView.setBackgroundColor(Color.argb(153, 00, 00, 00));
 			mTextView.setTextColor(Color.WHITE);
 			mTextView.setSingleLine(true);
 
-			mToast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 50);
+			mToast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 150);
 			mToast.setDuration(Toast.LENGTH_SHORT);
 		}
 	}

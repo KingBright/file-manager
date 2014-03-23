@@ -17,6 +17,9 @@ public abstract class BasicAdapter extends BaseAdapter {
     public void setMultiSelectionMode(boolean isMultiSelection) {
         if (isMultiSelection != mIsMultiSelectionMode) {
             mIsMultiSelectionMode = isMultiSelection;
+            if(!isMultiSelection){
+				list.clear();
+            }
             notifyDataSetChanged();
         }
     }
